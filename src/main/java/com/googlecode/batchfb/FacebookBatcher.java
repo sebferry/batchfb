@@ -22,6 +22,11 @@
 
 package com.googlecode.batchfb;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,18 +39,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.googlecode.batchfb.err.IOFacebookException;
 import com.googlecode.batchfb.impl.Batch;
 import com.googlecode.batchfb.impl.ErrorDetectingWrapper;
-import com.googlecode.batchfb.util.CryptoUtils;
-import com.googlecode.batchfb.util.Now;
-import com.googlecode.batchfb.util.RequestBuilder;
+import com.googlecode.batchfb.util.*;
 import com.googlecode.batchfb.util.RequestBuilder.HttpMethod;
 import com.googlecode.batchfb.util.RequestBuilder.HttpResponse;
-import com.googlecode.batchfb.util.StringUtils;
-import com.googlecode.batchfb.util.URLParser;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Primary implementation of the Batcher interface.
@@ -393,7 +389,7 @@ public class FacebookBatcher implements Batcher {
 		if (lastValidBatch != null && lastValidBatch.graphSize() < this.maxBatchSize)
 			return lastValidBatch;
 		else {
-			Batch next = new Batch(this, this.mapper, this.accessToken, this.apiVersion, this.timeout, this.retries);
+			Batch next = new Batch(this, this.mapper, this.accessToken, this.appSecretProof, this.apiVersion, this.timeout, this.retries);
 			this.batches.add(next);
 			return next;
 		}

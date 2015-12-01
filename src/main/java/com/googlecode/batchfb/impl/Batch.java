@@ -22,33 +22,6 @@
 
 package com.googlecode.batchfb.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.googlecode.batchfb.Batcher;
-import com.googlecode.batchfb.BinaryParam;
-import com.googlecode.batchfb.FacebookBatcher;
-import com.googlecode.batchfb.GraphRequest;
-import com.googlecode.batchfb.GraphRequestBase;
-import com.googlecode.batchfb.Later;
-import com.googlecode.batchfb.PagedLater;
-import com.googlecode.batchfb.Param;
-import com.googlecode.batchfb.QueryRequest;
-import com.googlecode.batchfb.err.FacebookException;
-import com.googlecode.batchfb.err.IOFacebookException;
-import com.googlecode.batchfb.type.Paged;
-import com.googlecode.batchfb.util.FirstElementLater;
-import com.googlecode.batchfb.util.FirstNodeLater;
-import com.googlecode.batchfb.util.GraphRequestBuilder;
-import com.googlecode.batchfb.util.JSONUtils;
-import com.googlecode.batchfb.util.LaterWrapper;
-import com.googlecode.batchfb.util.RequestBuilder;
-import com.googlecode.batchfb.util.RequestBuilder.HttpMethod;
-import com.googlecode.batchfb.util.RequestBuilder.HttpResponse;
-import com.googlecode.batchfb.util.StringUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -57,6 +30,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.googlecode.batchfb.*;
+import com.googlecode.batchfb.err.FacebookException;
+import com.googlecode.batchfb.err.IOFacebookException;
+import com.googlecode.batchfb.type.Paged;
+import com.googlecode.batchfb.util.*;
+import com.googlecode.batchfb.util.RequestBuilder.HttpMethod;
+import com.googlecode.batchfb.util.RequestBuilder.HttpResponse;
 
 /**
  * <p>Everything that can be done in a single Batch request.</p>
@@ -141,11 +127,18 @@ public class Batch implements Batcher, Later<JsonNode> {
 	 * @param master is our parent batcher, probably the FacebookBatcher
 	 * @param accessToken can be null to make unauthenticated FB requests
 	 */
-	public Batch(Batcher master, ObjectMapper mapper, String accessToken, String apiVersion, int timeout, int retries) {
-		this.master = master;
+    public Batch(Batcher master,
+                 ObjectMapper mapper,
+                 String accessToken,
+                 String appSecretProof,
+                 String apiVersion,
+                 int timeout,
+                 int retries) {
+        this.master = master;
 		this.mapper = mapper;
 		this.accessToken = accessToken;
-		this.apiVersion = apiVersion;
+        this.appSecretProof = appSecretProof;
+        this.apiVersion = apiVersion;
 		this.timeout = timeout;
 		this.retries = retries;
 	}
